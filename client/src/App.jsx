@@ -5,20 +5,27 @@ import { HomeLayout, Landing, Register, Login, DashboardLayout, Error } from './
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <HomeLayout />
-  },
-  {
-    path: '/register',
-    element: <Register />
-  },
-  {
-    path: '/login',
-    element: <Login />
-  },
-  {
-    path: '/dashboard',
-    element: <DashboardLayout />
-  }
+    element: <HomeLayout />,
+    errorElement: <Error />,
+    children: [
+      {
+        index: true,
+        element: <Landing />
+      },
+      {
+        path: 'register',
+        element: <Register />
+      },
+      {
+        path: 'login',
+        element: <Login />
+      },
+      {
+        path: 'dashboard',
+        element: <DashboardLayout />
+      }
+    ]
+  }  
 ]);
 
 import './App.css'
