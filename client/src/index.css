@@ -243,6 +243,7 @@ button:disabled {
   display: block;
   font-size: var(--small-text);
   margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
   text-transform: capitalize;
   letter-spacing: var(--letter-spacing);
   line-height: 1.5;
