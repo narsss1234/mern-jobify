@@ -22,9 +22,9 @@ const DashboardLayout = () => {
         setShowSidebar(!showSidebar);
     };
 
-    const logoutUser = (async = () => {
+    const logoutUser = async () => {
         console.log('logout user');
-    });
+    };
 
 
     return (
