@@ -37,6 +37,55 @@ app.post('/api/v1/jobs', (req, res) => {
     res.status(200).json({message: 'new jobs added', job: newJob});
 });
 
+app.get('/api/v1/jobs/:id', (req, res) => {
+    const {id} = req.params;
+
+    const job = jobs.find(p => p.id === id);
+
+    if(!job){
+        return(res.status(400).json({message: `Job not found with job id: ${id}`}));
+    }
+
+    res.status(200).json({job});
+
+});
+
+app.patch('/api/v1/jobs/:id', (req, res) => {
+    const { id } = req.params;
+
+    const { company, position } = req.body;
+
+    const job = jobs.find(p => p.id === id);
+
+    if(!job){
+        return res.status(400).json({message: `Job not found with job id: ${id}`});
+    }
+
+    if(!company || !position){
+        return res.status(400).json({message: 'Please provide company and position'});
+    }
+
+    job.company = company;
+    job.position = position;
+
+    res.status(200).json({message: 'Job updated', job});
+});
+
+app.delete('/api/v1/jobs/:id', (req, res) => {
+    let newJobsList = [];
+    const {id} = req.params;
+
+    const job = jobs.find(p => p.id === id);
+
+    if(!job){
+        return(res.status(400).json({message: `Job not found with job id: ${id}`}));
+    }
+
+    newJobsList = jobs.filter(p => p.id !== id);
+
+    res.status(200).json({message: 'Job deleted', job: newJobsList});
+});
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
