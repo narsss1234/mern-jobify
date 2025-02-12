@@ -1,33 +1,42 @@
 import express from 'express';
+import { nanoid } from 'nanoid';
+// import * as dotenv from 'dotenv/config';
+// dotenv.config();
 import morgan from 'morgan';
-import * as dotenv from 'dotenv';
 
-dotenv.config();
 
 const app = express();
-var port;
+const port = 5000;
 
-if(process.env.PORT){
-port = process.env.PORT;
- } else {
-port = 5000;
-}
-
-app.get("/", (req, res, next) => {
-    res.send('Hello World!');
-});
-
-app.use(morgan('dev'));
+let jobs = [
+    {id: nanoid(), company: 'apple', position: 'front-end'},
+    {id: nanoid(), company: 'google', position: 'back-end'},
+];
 
 app.use(express.json());
+app.use(morgan('dev'));
 
-app.post("/", (req, res, next) => {
-    const jsonObject_1 = req.body;
+app.get('/api/v1/jobs', (req, res) => {
+    res.status(200).json({jobs});
+});
 
-    console.log(jsonObject_1);
-    res.status(200).json({message: 'Data Received', data: req.body});
+app.post('/api/v1/jobs', (req, res) => {
+    // console.log(req.body);
+    const { company, position } = req.body;
+
+    if(!company || !position) {
+        return res.status(400).json({message: 'Please provide company and position'});
+    }
+
+    const id = nanoid(10);
+
+    const newJob = {id, company, position};
+
+    jobs.push(newJob);
+
+    res.status(200).json({message: 'new jobs added', job: newJob});
 });
 
 app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
+    console.log(`Server is running on port ${port}`);
 });
