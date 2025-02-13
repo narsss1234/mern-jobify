@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import 'express-async-errors';
 
 import jobRouter from './Routes/jobRouter.js';
+import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js';
 
 const app = express();
 const port = 5000;
@@ -21,10 +22,7 @@ app.use('*', (req,res) => {
     res.status(404).json({message: 'Route not found'});
 });
 
-app.use((err,req,res,next) => {
-    console.log(err);
-    res.status(500).json({message: 'Something went wrong'});
-});
+app.use(errorHandlerMiddleware);
 
 
 try{
