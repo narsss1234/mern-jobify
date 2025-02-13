@@ -5,72 +5,54 @@ let jobs = [
     {id: nanoid(), company: 'google', position: 'back-end'},
 ];
 
-export const getAllJobs = (req, res) => {
+import Job from '../models/jobModel.js';
+
+export const getAllJobs = async (req, res) => {
+    const jobs = await Job.find({});
     res.status(200).json({jobs});
 }
 
-export const createJob = (req, res) => {
-    // console.log(req.body);
-    const { company, position } = req.body;
+export const createJob = async (req, res) => {
 
-    if(!company || !position) {
-        return res.status(400).json({message: 'Please provide company and position'});
-    }
+    const job = await Job.create(req.body);
 
-    const id = nanoid(10);
-
-    const newJob = {id, company, position};
-
-    jobs.push(newJob);
-
-    res.status(200).json({message: 'new jobs added', job: newJob});
+    res.status(200).json({message: 'new job is added', job: job});
 }
 
-export const getJobById = (req, res) => {
+export const getJobById = async (req, res) => {
     const {id} = req.params;
 
-    const job = jobs.find(p => p.id === id);
+    const job = await Job.findById(id);
 
     if(!job){
-        return(res.status(400).json({message: `Job not found with job id: ${id}`}));
+        return(res.status(404).json({message: `Job not found with job id: ${id}`}));
     }
 
     res.status(200).json({job});
 
 }
 
-export const updateJob = (req, res) => {
+export const updateJob = async (req, res) => {
     const { id } = req.params;
 
-    const { company, position } = req.body;
+    const updatedJob = await Job.findByIdAndUpdate(id, req.body, {new: true});
 
-    const job = jobs.find(p => p.id === id);
-
-    if(!job){
-        return res.status(400).json({message: `Job not found with job id: ${id}`});
+    if(!updatedJob){
+        return res.status(404).json({message: `Job not found with job id: ${id}`});
     }
 
-    if(!company || !position){
-        return res.status(400).json({message: 'Please provide company and position'});
-    }
-
-    job.company = company;
-    job.position = position;
-
-    res.status(200).json({message: 'Job updated', job});
+    res.status(200).json({message: 'Job updated', updatedJob});
 }
 
-export const deleteJob = (req, res) => {
+export const deleteJob = async (req, res) => {
     let newJobsList = [];
     const {id} = req.params;
 
-    const job = jobs.find(p => p.id === id);
+    const removedJob = await Job.findByIdAndDelete(id);
 
-    if(!job){
-        return(res.status(400).json({message: `Job not found with job id: ${id}`}));
+    if(!removedJob){
+        return(res.status(404).json({message: `Job not found with job id: ${id}`}));
     }
 
-    newJobsList = jobs.filter(p => p.id !== id);
-
-    res.status(200).json({message: 'Job deleted', job: newJobsList});
+    res.status(200).json({message: 'Job deleted', job: removedJob});
 }
